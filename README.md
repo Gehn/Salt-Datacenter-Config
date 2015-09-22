@@ -7,32 +7,32 @@ A highly overengineered salt config setup for a datacenter.  Very specialized fo
 # Mature features:
 ###################
 
--Push authorized keys via configurations.pillar_auth_keys.sls
--Expire authorized keys via configurations.pillar_expire_keys.sls
--Maintain original->*.aside and symlinks via configurations.pillar_aside_and_symlink.sls
--Install and maintain all services in services.*
--Install and maintain all tools in tools.*
--Ensure/change root password via users.root and users.rootpasswd (the former steamrolls the full user)
--Maintain domain settings in network/yp.conf via configurations.pillar_domain_authconfig.sls 
+- Push authorized keys via configurations.pillar_auth_keys.sls
+- Expire authorized keys via configurations.pillar_expire_keys.sls
+- Maintain original->*.aside and symlinks via configurations.pillar_aside_and_symlink.sls
+- Install and maintain all services in services.*
+- Install and maintain all tools in tools.*
+- Ensure/change root password via users.root and users.rootpasswd (the former steamrolls the full user)
+- Maintain domain settings in network/yp.conf via configurations.pillar_domain_authconfig.sls 
  Override chain: pillar defaults, machine groups, machine specific.
  (NOTE: used to use pillar_domain.sls, authconfig more robust. use None in pillar for domain/server to prevent.)
--Install packages, looking first for a state in packages/, and if not, taking it as a literal package name
+- Install packages, looking first for a state in packages/, and if not, taking it as a literal package name
  does this derived from pillar fields, via packages.pillar_packages
  Typical machine override chain.
--Install repositories, using the pillar repositories field, via packages.pillar_repositories
+- Install repositories, using the pillar repositories field, via packages.pillar_repositories
  Typical machine override chain.
--Ensure existence of NFS mounts via configurations.pillar_network_mounts.sls
+- Ensure existence of NFS mounts via configurations.pillar_network_mounts.sls
  Same machine pillar overrides.
--sync cups printer files via the cups_printers field via services.pillar_cups_printers
+- sync cups printer files via the cups_printers field via services.pillar_cups_printers
  Typical pillar accumulation/override chain.
 
-#FIXME: always be suspicious of top.sls.  It does way to much for its own good.
+FIXME: always be suspicious of top.sls.  It does way to much for its own good.
 The following relies on top.sls via a highstate push. (see Tips section for Test)
 
--Apply states automatically matching a given host's name. <name>.sls would automatically get applied to <name>
--Apply states automatically matching the roles entry in a given host's grains.
--Apply states automatically matching the roles entry in the machine entry in pillar
--Apply states automatically based on IP configuration/OS/anything else. (this is more raw salt territory.)
+- Apply states automatically matching a given host's name. <name>.sls would automatically get applied to <name>
+- Apply states automatically matching the roles entry in a given host's grains.
+- Apply states automatically matching the roles entry in the machine entry in pillar
+- Apply states automatically based on IP configuration/OS/anything else. (this is more raw salt territory.)
 - (as part of services.salt-minion) Automatically push grain files matching <hostname>.grain or <role>.grain
 
 
@@ -77,25 +77,25 @@ top.sls
 #############
 # "Gotchas":
 #############
-variables set via the "set" directive in templating are AGGRESSIVELY SCOPED, and follow
+- variables set via the "set" directive in templating are AGGRESSIVELY SCOPED, and follow
 the traditional rules of "shadowing".  (if you do a set in an inner scope on a variable
 that was set in the outer scope, when the inner scope exits it will revert to the outer
 scoped value)
 
-after modifying an execution module, you must call saltutil.sync_all on the minion to sync the module.
+- after modifying an execution module, you must call saltutil.sync_all on the minion to sync the module.
 
-After modifying pillar, you have to restart the minion to sync it.  Refresh_pillar should do this,
+- After modifying pillar, you have to restart the minion to sync it.  Refresh_pillar should do this,
 but it does not, pending on a bug that's been issued.
 
-After modifying a state, you don't need to do anything.
+- After modifying a state, you don't need to do anything.
 
-You can dynamically introspect salt files via cp.list_master, but you cannot dynamically introspect
+- You can dynamically introspect salt files via cp.list_master, but you cannot dynamically introspect
 raw pillar files.
 
-If you use a required stanza (on an sls state), you must include that state prior in the .sls file.
+- If you use a required stanza (on an sls state), you must include that state prior in the .sls file.
 See the pillar_network_mounts for example.
 
-Currently, if you aren't using a pillar field, you should coment out the field label; e.g. "groups:".
+- Currently, if you aren't using a pillar field, you should coment out the field label; e.g. "groups:".
 This is only due to the salt considering an empty dict a Nontype instead of a list, could be solved
 by adding more checks in code, but that's time+clutter that isn't necessarily needed.
 FIXME: totally bad form, should really deal with this so it's "hard to be wrong".
@@ -104,11 +104,11 @@ FIXME: totally bad form, should really deal with this so it's "hard to be wrong"
 #################
 # Tips:
 #################
-It is generally "good form" to make all your states/modules safely re-runnable; and as aggressively
+- It is generally "good form" to make all your states/modules safely re-runnable; and as aggressively
 non-destructive as possible.
 
-A good trick to testing if a state is being called properly is just to make it be a file.touch state to some /tmp/testfile.  
+- A good trick to testing if a state is being called properly is just to make it be a file.touch state to some /tmp/testfile.  
 
-Run anything with -ldebug for additional debugging.
+- Run anything with -ldebug for additional debugging.
 
-Run a state with test=True for a "dry run"
+- Run a state with test=True for a "dry run"
