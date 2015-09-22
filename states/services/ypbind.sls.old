@@ -1,0 +1,19 @@
+#TODO: use different domain configurations by subnet.
+
+/etc/yp.conf:
+  file:
+    - managed
+    - source: salt://assets/services/yp.conf
+    - require:
+      - pkg: ypbind
+
+ypbind:
+  pkg:
+    - installed
+
+  service:
+    - running
+    - watch:
+      - file: /etc/yp.conf
+    - require:
+      - pkg: ypbind

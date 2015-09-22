@@ -1,0 +1,28 @@
+base:
+
+# This component will get pushed to ALL hosts.
+  '*':
+    - common
+
+# This component ensures that all hosts auto-load the states identified by their node_type grain.
+  {% set my_type = grains['node_type'] %}
+  'node_type:{{ my_type }}':
+    - match: grain
+    - {{ my_type }}
+
+# This component ensures that all hosts auto-load any states idenfied by their hostname.
+  {% set my_hostname = grains['host'] %}
+  'host:{{ my_hostname }}':
+    - match: grain
+    - {{ my_hostname }}
+
+# This component is basically an example of how to deploy to a certain subnet.
+  '128.220.233.0/24':
+    - vbns
+
+# This component ensures that all hosts auto-load the states identified by their roles.
+  {% for role in grains['roles']: %}
+  'role:{{ role }}':
+    - match: grain
+    - {{ role }}
+  {% endfor %}

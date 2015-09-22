@@ -1,0 +1,3 @@
+/tmp/roletest:
+  file:
+    - touch

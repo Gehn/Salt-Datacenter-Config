@@ -1,0 +1,6 @@
+roles:
+  - sensornode
+room: 156-network
+#NOTE: would be better to put the room# in pillar, since it's "dynamic".
+#Haven't really come up with great ideas for what should go in an auto-bootstraped
+#custom grain like this, but I feel like some exist.  Consider this a demo.

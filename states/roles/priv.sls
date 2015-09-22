@@ -1,0 +1,2 @@
+include:
+  - configurations.priv.sls

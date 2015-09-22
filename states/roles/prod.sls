@@ -1,0 +1,2 @@
+include:
+  - configurations.prod.sls

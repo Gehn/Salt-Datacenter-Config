@@ -1,0 +1,3 @@
+ipmitool:
+  pkg:
+    - installed
